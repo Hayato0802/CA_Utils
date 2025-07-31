@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Build output
+*.crx
+*.pem
+build/
+dist/
+
+# Local settings
+.claude/
+config.js
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Local test files
+test-*
+*-test.*
+local-*
+*-local.*

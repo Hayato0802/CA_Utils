@@ -1,0 +1,98 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.57)'
+        required: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        else
+          VERSION=${GITHUB_REF#refs/tags/v}
+        fi
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "Building version: $VERSION"
+    
+    - name: Update manifest version
+      run: |
+        VERSION="${{ steps.version.outputs.VERSION }}"
+        jq --arg version "$VERSION" '.version = $version' manifest.json > manifest.tmp.json
+        mv manifest.tmp.json manifest.json
+        echo "Updated manifest.json to version $VERSION"
+        cat manifest.json
+    
+    - name: Create ZIP for Chrome Web Store
+      run: |
+        zip -r co-assign-utils-${{ steps.version.outputs.VERSION }}.zip \
+          manifest.json \
+          background.js \
+          content-script-coassign.js \
+          content-script-hrmos.js \
+          popup.html \
+          popup.js \
+          images/
+    
+    - name: Generate CRX file
+      run: |
+        # CRX生成用のスクリプトを実行
+        chmod +x scripts/build.sh
+        ./scripts/build.sh ${{ steps.version.outputs.VERSION }}
+    
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        echo "## 🚀 Co-Assign Utils v${{ steps.version.outputs.VERSION }}" > release_notes.md
+        echo "" >> release_notes.md
+        echo "### 📦 インストール方法" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "#### 方法1: PowerShellスクリプトを使用（推奨）" >> release_notes.md
+        echo '```powershell' >> release_notes.md
+        echo '# 組織のリポジトリURLに置き換えてください' >> release_notes.md
+        echo 'irm https://github.com/[organization]/[repository]/releases/latest/download/update.ps1 | iex' >> release_notes.md
+        echo '```' >> release_notes.md
+        echo "" >> release_notes.md
+        echo "#### 方法2: 手動インストール" >> release_notes.md
+        echo "1. 下記の \`co-assign-utils-${{ steps.version.outputs.VERSION }}.zip\` をダウンロード" >> release_notes.md
+        echo "2. Chromeの拡張機能ページ（chrome://extensions/）を開く" >> release_notes.md
+        echo "3. 右上の「デベロッパーモード」を有効化" >> release_notes.md
+        echo "4. 「パッケージ化されていない拡張機能を読み込む」をクリック" >> release_notes.md
+        echo "5. 解凍したフォルダを選択" >> release_notes.md
+        echo "" >> release_notes.md
+        echo "### 📝 更新履歴" >> release_notes.md
+        echo "" >> release_notes.md
+        # 最新のコミットメッセージを取得
+        git log --pretty=format:"- %s" -n 5 >> release_notes.md
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.version.outputs.VERSION }}
+        name: Release v${{ steps.version.outputs.VERSION }}
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+        files: |
+          co-assign-utils-${{ steps.version.outputs.VERSION }}.zip
+          co-assign-utils-${{ steps.version.outputs.VERSION }}.crx
+          scripts/update.ps1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
