@@ -38,9 +38,23 @@ try {
     $tempFile = "$env:TEMP\co-assign-utils.zip"
     Invoke-WebRequest -Uri $downloadUrl -OutFile $tempFile
     
+    # config.jsをバックアップ
+    $configBackup = $null
+    $configPath = "$installDir\config.js"
+    if (Test-Path $configPath) {
+        $configBackup = Get-Content $configPath -Raw
+    }
+    
+    # 古いファイルを削除して新しいファイルを展開
     if (Test-Path $installDir) { Remove-Item $installDir -Recurse -Force }
     Expand-Archive -Path $tempFile -DestinationPath $installDir -Force
     Remove-Item $tempFile
+    
+    # config.jsを復元
+    if ($configBackup) {
+        Set-Content -Path $configPath -Value $configBackup
+        Write-Host "config.js restored" -ForegroundColor Cyan
+    }
     
     # 更新の場合
     if( $currentVersion -ne "未インストール" ) {
