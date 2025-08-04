@@ -67,7 +67,7 @@ jobs:
         echo "#### 方法1: PowerShellスクリプトを使用（推奨）" >> release_notes.md
         echo '```powershell' >> release_notes.md
         echo '# 組織のリポジトリURLに置き換えてください' >> release_notes.md
-        echo 'irm https://github.com/[organization]/[repository]/releases/latest/download/update.ps1 | iex' >> release_notes.md
+        echo 'irm https://github.com/Hayato0802/CA_Utils/releases/latest/download/update.ps1 | iex' >> release_notes.md
         echo '```' >> release_notes.md
         echo "" >> release_notes.md
         echo "#### 方法2: 手動インストール" >> release_notes.md

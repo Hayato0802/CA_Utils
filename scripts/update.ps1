@@ -1,10 +1,10 @@
 # Co-Assign Utils Simple Updater
-# Usage: irm https://github.com/Hayato0802/co-assign_utils/releases/latest/download/update.ps1 | iex
+# Usage: irm https://github.com/Hayato0802/CA_Utils/releases/latest/download/update.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$repo = "organization/extension-repo"
+$repo = "Hayato0802/CA_Utils"
 $installDir = "$env:LOCALAPPDATA\CoAssignUtils"
 
 Write-Host "Checking for updates..." -ForegroundColor Yellow
