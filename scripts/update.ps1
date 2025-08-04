@@ -1,4 +1,4 @@
-# Co-Assign Utils Simple Updater
+﻿# Co-Assign Utils Simple Updater
 # Usage: irm https://github.com/Hayato0802/CA_Utils/releases/latest/download/update.ps1 | iex
 
 $ErrorActionPreference = "Stop"
