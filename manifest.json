@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Co-Assign Utils",
-  "description": "Co-Assign Utils",
-  "version": "1.56",
+  "name": "Co-Assign Utils 2",
+  "description": "Co-Assign Utils (auto update)",
+  "version": "2.00",
   "permissions": [
     "activeTab",
     "scripting",
