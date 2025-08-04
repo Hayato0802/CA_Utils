@@ -1,4 +1,4 @@
-ï»¿# Co-Assign Utils Simple Updater
+# Co-Assign Utils Simple Updater
 # Usage: irm https://github.com/Hayato0802/CA_Utils/releases/latest/download/update.ps1 | iex
 
 $ErrorActionPreference = "Stop"
@@ -23,11 +23,11 @@ try {
 if (Test-Path "$installDir\manifest.json") {
     $currentVersion = (Get-Content "$installDir\manifest.json" | ConvertFrom-Json).version
     if ($currentVersion -eq $latestVersion) {
-        Write-Host "æ—¢ã«æœ€æ–°ç‰ˆãŒDLã•ã‚Œã¦ã„ã¾ã™ (v$currentVersion)" -ForegroundColor Green
+        Write-Host "Šù‚ÉÅV”Å‚ªDL‚³‚ê‚Ä‚¢‚Ü‚· (v$currentVersion)" -ForegroundColor Green
         Start-Process (Resolve-Path $installDir)
         exit 1
     }
-    Write-Host "æ›´æ–°ä¸­... from v$currentVersion to v$latestVersion" -ForegroundColor Cyan
+    Write-Host "XV’†... from v$currentVersion to v$latestVersion" -ForegroundColor Cyan
     Start-Process (Resolve-Path $installDir)
 } else {
     Write-Host "Installing v$latestVersion" -ForegroundColor Cyan
