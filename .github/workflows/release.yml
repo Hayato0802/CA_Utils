@@ -49,6 +49,7 @@ jobs:
           content-script-hrmos.js \
           popup.html \
           popup.js \
+          utils.js \
           images/
     
     - name: Generate CRX file
